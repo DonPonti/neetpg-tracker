@@ -374,16 +374,16 @@ export default function SubjectTopicsDetail({
                             </div>
 
                             {/* 6 Stage Toggle Boxes */}
-                            <div className="flex items-center gap-1 bg-slate-50/50 p-1 rounded-lg self-start sm:self-auto select-none border border-slate-100">
+                            <div className="flex items-center gap-1.5 bg-slate-50/50 p-1 rounded-xl w-full sm:w-auto self-stretch sm:self-auto justify-between sm:justify-start select-none border border-slate-100">
                               {stageKeys.map((stage) => {
                                 const isChecked = topic.stages[stage.name];
                                 return (
                                   <label
                                     key={stage.name}
                                     title={stage.label}
-                                    className={`group flex items-center justify-center p-0.5 flex-col aspect-square w-8 rounded-md cursor-pointer border text-center font-extrabold transition-all duration-150 relative ${
+                                    className={`group flex-1 sm:flex-none flex items-center justify-center p-0.5 flex-col aspect-square w-9 h-9 sm:w-8 sm:h-8 rounded-lg cursor-pointer border text-center font-extrabold transition-all duration-150 relative ${
                                       isChecked
-                                        ? 'bg-blue-50 border-blue-250 text-blue-700 font-black'
+                                        ? 'bg-blue-50 border-blue-200 text-blue-700 font-black'
                                         : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-100/60'
                                     }`}
                                   >
@@ -395,7 +395,7 @@ export default function SubjectTopicsDetail({
                                       }
                                       className="sr-only"
                                     />
-                                    <span className="text-[10px] leading-none uppercase select-none">{stage.short}</span>
+                                    <span className="text-[10px] sm:text-[9px] leading-none uppercase select-none">{stage.short}</span>
                                     {/* Inline bullet indicator for checklist completeness */}
                                     <div
                                       className={`absolute -bottom-0.5 right-0 w-1.5 h-1.5 rounded-full ${
@@ -416,7 +416,7 @@ export default function SubjectTopicsDetail({
                                     setNotesBuffer(topic.notesText || '');
                                   }
                                 }}
-                                className={`p-1.5 hover:bg-slate-100 rounded-md transition-all shrink-0 ml-1 flex items-center justify-center ${
+                                className={`p-2 sm:p-1.5 hover:bg-slate-100 rounded-lg transition-all shrink-0 ml-1 flex items-center justify-center ${
                                   topic.notesText && topic.notesText.trim() !== ''
                                     ? 'bg-amber-50 text-amber-600 border border-amber-200'
                                     : 'text-slate-300 hover:text-slate-500'

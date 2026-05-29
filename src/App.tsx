@@ -392,36 +392,39 @@ export default function App() {
         <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200/50 shadow-inner mb-6">
           <button
             onClick={() => setActiveTab('syllabus')}
-            className={`flex-1 py-3 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 py-3 px-2 sm:px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'syllabus'
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <BookMarked size={15} />
-            <span>Syllabus Checklist (19 Subjects)</span>
+            <BookMarked size={15} className="shrink-0" />
+            <span className="hidden md:inline">Syllabus Checklist (19 Subjects)</span>
+            <span className="md:hidden">Syllabus</span>
           </button>
           <button
             onClick={() => setActiveTab('mocks')}
-            className={`flex-1 py-3 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 py-3 px-2 sm:px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'mocks'
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <Award size={15} />
-            <span>Grand Test & Mock Analytics</span>
+            <Award size={15} className="shrink-0" />
+            <span className="hidden md:inline">Grand Test & Mock Analytics</span>
+            <span className="md:hidden">Mocks</span>
           </button>
           <button
             onClick={() => setActiveTab('planner')}
-            className={`flex-1 py-3 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 py-3 px-2 sm:px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'planner'
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <CalendarDays size={15} />
-            <span>Daily Focus Targets</span>
+            <CalendarDays size={15} className="shrink-0" />
+            <span className="hidden md:inline">Daily Focus Targets</span>
+            <span className="md:hidden">Planner</span>
           </button>
         </div>
 
