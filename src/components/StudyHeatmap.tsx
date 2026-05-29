@@ -219,12 +219,11 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
   }, [columnsOfWeeks]);
 
   const getColorClass = (hours: number) => {
-    if (hours === 0) return 'bg-slate-800 hover:bg-slate-700 border border-slate-900/50';
-    if (hours < 4) return 'bg-emerald-950/70 border border-emerald-900/30';
-    if (hours < 7) return 'bg-emerald-800 border border-emerald-700/50';
-    if (hours < 10) return 'bg-emerald-650 shadow-[0_0_8px_rgba(16,185,129,0.2)] border border-emerald-500/40';
-    // Intense Neon Green with pulsating energy
-    return 'bg-emerald-400 border border-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.55)] animate-pulse';
+    if (hours === 0) return 'bg-slate-100 hover:bg-slate-200 border border-slate-200';
+    if (hours < 4) return 'bg-emerald-100/80 border border-emerald-200/40 text-emerald-900';
+    if (hours < 7) return 'bg-emerald-300 border border-emerald-400/50';
+    if (hours < 10) return 'bg-emerald-500 border border-emerald-600/40';
+    return 'bg-emerald-400 border border-emerald-300 shadow-[0_0_10px_rgba(52,211,153,0.45)]';
   };
 
   const handleSubmitLog = (e: React.FormEvent) => {
@@ -248,7 +247,7 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
   };
 
   return (
-    <div id="github-heatmap-section" className="bg-slate-900 border border-slate-800/80 rounded-3xl p-6 shadow-2xl relative overflow-hidden backdrop-blur-md">
+    <div id="github-heatmap-section" className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm relative overflow-hidden">
       
       {/* Background Mesh Decor */}
       <div className="absolute -top-16 -right-16 w-60 h-60 bg-emerald-500/5 rounded-full filter blur-3xl pointer-events-none" />
@@ -257,20 +256,20 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
       {/* Header Info */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <span className="text-xs font-semibold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+          <span className="text-xs font-semibold text-emerald-600 uppercase tracking-widest flex items-center gap-1.5">
             <Sparkles size={13} className="animate-pulse" /> Consistency Engine
           </span>
-          <h2 className="text-xl font-extrabold text-white font-display tracking-tight flex items-center gap-2 mt-1">
+          <h2 className="text-xl font-extrabold text-slate-900 font-display tracking-tight flex items-center gap-2 mt-1">
             GitHub-Style Study Heatmap
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Visualizing 365 days of active medical revision blocks. Click on any cell or log your stats daily.
           </p>
         </div>
 
         <button
           onClick={() => setShowLogModal(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-black text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-lg shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer self-start md:self-auto"
+          className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-black text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-md transition-all cursor-pointer self-start md:self-auto"
         >
           <Plus size={15} /> Log Today's Study
         </button>
@@ -278,61 +277,61 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
 
       {/* Main Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800/60 flex items-center gap-3.5 hover:border-emerald-500/30 transition-all">
-          <div className="h-10 w-10 bg-orange-500/10 text-orange-500 border border-orange-500/20 rounded-xl flex items-center justify-center relative">
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3.5 hover:border-emerald-500/30 transition-all">
+          <div className="h-10 w-10 bg-orange-50 text-orange-650 border border-orange-100 rounded-xl flex items-center justify-center relative">
             <Flame size={20} className="animate-bounce" />
             <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-500 rounded-full animate-ping" />
           </div>
           <div>
             <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Active Streak</div>
-            <div className="text-xl font-black text-white font-display">{stats.currentStreak} Days</div>
+            <div className="text-xl font-black text-slate-900 font-display">{stats.currentStreak} Days</div>
           </div>
         </div>
 
-        <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800/60 flex items-center gap-3.5 hover:border-blue-500/30 transition-all">
-          <div className="h-10 w-10 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl flex items-center justify-center">
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3.5 hover:border-blue-500/30 transition-all">
+          <div className="h-10 w-10 bg-blue-50 text-blue-600 border border-blue-105 rounded-xl flex items-center justify-center">
             <Flame size={20} />
           </div>
           <div>
             <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">All-Time Peak</div>
-            <div className="text-xl font-black text-white font-display">{stats.maxStreak} Days</div>
+            <div className="text-xl font-black text-slate-900 font-display">{stats.maxStreak} Days</div>
           </div>
         </div>
 
-        <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800/60 flex items-center gap-3.5 hover:border-emerald-500/30 transition-all">
-          <div className="h-10 w-10 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl flex items-center justify-center">
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3.5 hover:border-emerald-500/30 transition-all">
+          <div className="h-10 w-10 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl flex items-center justify-center">
             <Clock size={20} />
           </div>
           <div>
             <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Total Time</div>
-            <div className="text-xl font-black text-white font-display">{stats.totalHours} Hours</div>
+            <div className="text-xl font-black text-slate-900 font-display">{stats.totalHours} Hours</div>
           </div>
         </div>
 
-        <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800/60 flex items-center gap-3.5 hover:border-indigo-500/30 transition-all">
-          <div className="h-10 w-10 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-xl flex items-center justify-center">
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3.5 hover:border-indigo-500/30 transition-all">
+          <div className="h-10 w-10 bg-indigo-50 text-indigo-650 border border-indigo-100 rounded-xl flex items-center justify-center">
             <CheckSquare size={19} />
           </div>
           <div>
             <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">MCQs Answered</div>
-            <div className="text-xl font-black text-white font-display">{stats.totalMcqs} Qs</div>
+            <div className="text-xl font-black text-slate-900 font-display">{stats.totalMcqs} Qs</div>
           </div>
         </div>
 
-        <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800/60 col-span-2 lg:col-span-1 flex items-center gap-3.5 hover:border-emerald-500/30 transition-all">
-          <div className="h-10 w-10 bg-teal-500/10 text-teal-400 border border-teal-500/20 rounded-xl flex items-center justify-center">
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 col-span-2 lg:col-span-1 flex items-center gap-3.5 hover:border-emerald-500/30 transition-all">
+          <div className="h-10 w-10 bg-teal-550/10 text-teal-650 border border-teal-100/60 rounded-xl flex items-center justify-center">
             <TrendingUp size={19} />
           </div>
           <div>
             <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Consistency Rating</div>
-            <div className="text-xl font-black text-gradient bg-gradient-to-r from-emerald-400 to-teal-400 font-display">{stats.consistencyScore}%</div>
+            <div className="text-xl font-black text-emerald-600 font-display">{stats.consistencyScore}%</div>
           </div>
         </div>
       </div>
 
       {/* Contribution Calendar Wrapper */}
-      <h3 className="text-xs font-extrabold text-slate-400 mb-2 uppercase tracking-wide">365-Day Revision Pipeline</h3>
-      <div className="relative bg-slate-950/80 border border-slate-850 p-4 rounded-2xl overflow-x-auto select-none [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:bg-slate-800 [&::-webkit-scrollbar-thumb]:rounded-full pb-6">
+      <h3 className="text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wide">365-Day Revision Pipeline</h3>
+      <div className="relative bg-slate-50 border border-slate-200 p-4 rounded-2xl overflow-x-auto select-none pb-6">
         
         {/* Month headers row */}
         <div className="relative flex gap-1 h-5 mb-1.5 pl-8 text-[9px] font-bold text-slate-500">
@@ -349,7 +348,7 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
 
         <div className="flex">
           {/* Weekday indicators column */}
-          <div className="grid grid-rows-7 gap-1 pr-2.5 text-[9px] font-bold text-slate-600 w-8 h-[98px]">
+          <div className="grid grid-rows-7 gap-1 pr-2.5 text-[9px] font-bold text-slate-400 w-8 h-[98px]">
             <span>Sun</span>
             <span></span>
             <span>Tue</span>
@@ -397,14 +396,14 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
         </div>
 
         {/* Legend */}
-        <div className="flex justify-between items-center text-[10px] text-slate-500 mt-4 px-2 leading-none">
+        <div className="flex justify-between items-center text-[10px] text-slate-550 mt-4 px-2 leading-none">
           <div>Click any square to retro-log or modify daily statistics</div>
           <div className="flex items-center gap-1.5 font-bold">
             <span>Less</span>
-            <div className="w-2.5 h-2.5 rounded-xs bg-slate-800" />
-            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-950" />
-            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-850" />
-            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-650" />
+            <div className="w-2.5 h-2.5 rounded-xs bg-slate-100 border border-slate-205" />
+            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-100" />
+            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-300" />
+            <div className="w-2.5 h-2.5 rounded-xs bg-emerald-500" />
             <div className="w-2.5 h-2.5 rounded-xs bg-emerald-400" />
             <span>More</span>
           </div>
@@ -418,29 +417,29 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
               animate={{ opacity: 1, scale: 1, y: hoveredDay.y }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.12 }}
-              className="absolute bg-slate-900 border border-slate-700 shadow-xl rounded-xl p-3 z-30 pointer-events-none text-xs w-48 text-left"
+              className="absolute bg-white border border-slate-200 shadow-xl rounded-xl p-3 z-30 pointer-events-none text-xs w-48 text-left"
               style={{ left: Math.min(hoveredDay.x - 90, 680) }}
             >
-              <div className="font-extrabold text-white text-[11px] pb-1 border-b border-slate-800">
+              <div className="font-extrabold text-slate-900 text-[11px] pb-1 border-b border-slate-100">
                 {new Date(hoveredDay.date).toLocaleDateString('en-US', {
                   dateStyle: 'medium',
                 })}
               </div>
-              <div className="mt-2 space-y-1 text-slate-300">
+              <div className="mt-2 space-y-1 text-slate-650">
                 <div className="flex justify-between">
                   <span>Hours studied:</span>
-                  <strong className="text-emerald-400 font-bold">{hoveredDay.hours} hr</strong>
+                  <strong className="text-emerald-600 font-bold">{hoveredDay.hours} hr</strong>
                 </div>
                 <div className="flex justify-between">
                   <span>MCQs solved:</span>
-                  <strong className="text-blue-400 font-bold">{hoveredDay.mcqs}</strong>
+                  <strong className="text-blue-650 font-bold">{hoveredDay.mcqs}</strong>
                 </div>
                 <div className="flex justify-between">
                   <span>Revisions done:</span>
-                  <strong className="text-purple-400 font-bold">{hoveredDay.revs} topics</strong>
+                  <strong className="text-purple-600 font-bold">{hoveredDay.revs} topics</strong>
                 </div>
                 {hoveredDay.subjects.length > 0 && (
-                  <div className="text-[10px] text-slate-400 border-t border-slate-800/80 pt-1 mt-1 truncate">
+                  <div className="text-[10px] text-slate-500 border-t border-slate-100 pt-1 mt-1 truncate">
                     Focused: {hoveredDay.subjects.join(', ')}
                   </div>
                 )}
@@ -451,53 +450,53 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
       </div>
 
       {/* Below Heatmap Footer elements */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-slate-800">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-slate-200">
         
         {/* Left Column: duolingo checkin card */}
-        <div className="bg-slate-950/70 p-4 border border-slate-800/80 rounded-2xl flex flex-col justify-between">
-          <div className="flex gap-2 text-slate-300">
-            <div className="text-orange-400 shrink-0 mt-0.5">
+        <div className="bg-slate-50/50 p-4 border border-slate-200 rounded-2xl flex flex-col justify-between">
+          <div className="flex gap-2 text-slate-600">
+            <div className="text-orange-500 shrink-0 mt-0.5">
               <Flame size={20} className="animate-pulse" />
             </div>
             <div>
-              <h4 className="text-xs font-black text-white">Percentile Peer Insights</h4>
-              <p className="text-[11px] text-slate-400 leading-normal mt-1">
-                "You revised more than <strong className="text-emerald-400 font-bold font-mono">82%</strong> of active NEET aspirants this month."
+              <h4 className="text-xs font-black text-slate-900">Percentile Peer Insights</h4>
+              <p className="text-[11px] text-slate-500 leading-normal mt-1">
+                "You revised more than <strong className="text-emerald-600 font-bold font-mono">82%</strong> of active NEET aspirants this month."
               </p>
             </div>
           </div>
           
           <div className="mt-3">
-            <div className="flex justify-between text-[10px] text-slate-500 font-bold uppercase mb-1">
+            <div className="flex justify-between text-[10px] text-slate-400 font-bold uppercase mb-1">
               <span>Goal consistency speed</span>
               <span>On Flight</span>
             </div>
-            <div className="h-1.5 bg-slate-900 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div className="bg-gradient-to-r from-orange-500 to-yellow-400 h-full rounded-full" style={{ width: `${stats.consistencyScore}%` }} />
             </div>
           </div>
         </div>
 
         {/* Center Column: Weekly Recharts area graph */}
-        <div className="bg-slate-950/70 p-4 border border-slate-800/80 rounded-2xl">
+        <div className="bg-slate-50/50 p-4 border border-slate-200 rounded-2xl">
           <div className="flex justify-between items-center mb-2">
-            <h4 className="text-xs font-black text-white flex items-center gap-1">
-              <Compass size={13} className="text-blue-400" /> Hourly Trends (8w)
+            <h4 className="text-xs font-black text-slate-800 flex items-center gap-1">
+              <Compass size={13} className="text-blue-500" /> Hourly Trends (8w)
             </h4>
-            <span className="text-[9px] font-mono text-slate-500">Weekly Sums</span>
+            <span className="text-[9px] font-mono text-slate-400">Weekly Sums</span>
           </div>
           <div className="h-20 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={weeklyTrendData}>
                 <defs>
                   <linearGradient id="glowHour" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" aria-hidden="true" tick={{ fill: '#64748b', fontSize: 8 }} axisLine={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '10px', fontSize: '10px' }}
+                  contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderRadius: '10px', fontSize: '10px' }}
                   labelStyle={{ fontWeight: 'bold' }}
                 />
                 <Area type="monotone" dataKey="hours" stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#glowHour)" />
@@ -507,19 +506,19 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
         </div>
 
         {/* Right Column: Mini Bar graph of weekly questions solved */}
-        <div className="bg-slate-950/70 p-4 border border-slate-800/80 rounded-2xl">
+        <div className="bg-slate-50/50 p-4 border border-slate-200 rounded-2xl">
           <div className="flex justify-between items-center mb-2">
-            <h4 className="text-xs font-black text-white flex items-center gap-1">
-              <Compass size={13} className="text-indigo-400" /> MCQ Volumes (8w)
+            <h4 className="text-xs font-black text-slate-800 flex items-center gap-1">
+              <Compass size={13} className="text-indigo-500" /> MCQ Volumes (8w)
             </h4>
-            <span className="text-[9px] font-mono text-slate-500">Solved / Wk</span>
+            <span className="text-[9px] font-mono text-slate-400">Solved / Wk</span>
           </div>
           <div className="h-20 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={weeklyTrendData}>
                 <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 8 }} axisLine={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '10px', fontSize: '10px' }}
+                  contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderRadius: '10px', fontSize: '10px' }}
                   labelStyle={{ fontWeight: 'bold' }}
                 />
                 <Bar dataKey="mcqs" fill="#4f46e5" radius={[4, 4, 0, 0]} />
@@ -532,16 +531,16 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
       {/* Log Quick Modal */}
       <AnimatePresence>
         {showLogModal && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-slate-900 border border-slate-800 shadow-2xl rounded-3xl w-full max-w-md overflow-hidden relative"
+              className="bg-white border border-slate-200 shadow-2xl rounded-3xl w-full max-w-md overflow-hidden relative"
             >
-              <div className="p-6 border-b border-slate-800">
-                <h3 className="text-lg font-extrabold text-white font-display">Log Study block</h3>
-                <p className="text-xs text-slate-400 mt-1">
+              <div className="p-6 border-b border-slate-200">
+                <h3 className="text-lg font-extrabold text-slate-900 font-display">Log Study block</h3>
+                <p className="text-xs text-slate-500 mt-1">
                   Log your MCQ score, reading speeds & hours for chronological consistency.
                 </p>
               </div>
@@ -549,17 +548,17 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
               <form onSubmit={handleSubmitLog} className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1.5">Date</label>
+                    <label className="block text-xs font-bold text-slate-500 mb-1.5">Date</label>
                     <input
                       type="date"
                       required
                       value={formDate}
                       onChange={(e) => setFormDate(e.target.value)}
-                      className="w-full text-xs px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-100"
+                      className="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1.5">Study Hours</label>
+                    <label className="block text-xs font-bold text-slate-500 mb-1.5">Study Hours</label>
                     <input
                       type="number"
                       min="0"
@@ -567,14 +566,14 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
                       required
                       value={formHours}
                       onChange={(e) => setFormHours(parseInt(e.target.value) || 0)}
-                      className="w-full text-xs px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-100"
+                      className="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1.5">MCQs Completed</label>
+                    <label className="block text-xs font-bold text-slate-500 mb-1.5">MCQs Completed</label>
                     <input
                       type="number"
                       min="0"
@@ -582,11 +581,11 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
                       required
                       value={formMcqs}
                       onChange={(e) => setFormMcqs(parseInt(e.target.value) || 0)}
-                      className="w-full text-xs px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-100"
+                      className="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1.5">Topics Revised</label>
+                    <label className="block text-xs font-bold text-slate-500 mb-1.5">Topics Revised</label>
                     <input
                       type="number"
                       min="0"
@@ -594,27 +593,27 @@ export default function StudyHeatmap({ studyLogs, onAddStudyLog, dailyGoalHours 
                       required
                       value={formRevs}
                       onChange={(e) => setFormRevs(parseInt(e.target.value) || 0)}
-                      className="w-full text-xs px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-100"
+                      className="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1.5">Subjects Tag (comma separated)</label>
+                  <label className="block text-xs font-bold text-slate-500 mb-1.5">Subjects Tag (comma separated)</label>
                   <input
                     type="text"
                     value={formSubjects}
                     onChange={(e) => setFormSubjects(e.target.value)}
                     placeholder="e.g. Anatomy, Physiology, OBG"
-                    className="w-full text-xs px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-100 placeholder:text-slate-600"
+                    className="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800 placeholder:text-slate-400"
                   />
                 </div>
 
-                <div className="flex gap-2.5 justify-end pt-4 border-t border-slate-850">
+                <div className="flex gap-2.5 justify-end pt-4 border-t border-slate-200">
                   <button
                     type="button"
                     onClick={() => setShowLogModal(false)}
-                    className="px-4 py-2 text-xs font-bold text-slate-400 hover:bg-slate-800 rounded-xl"
+                    className="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl"
                   >
                     Discard
                   </button>
