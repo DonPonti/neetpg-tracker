@@ -238,7 +238,7 @@ export default function DashboardStats({
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Exam Countdown</span>
             <span className="text-xs font-semibold bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full flex items-center gap-1">
-              <AlertCircle size={12} /> Target Mode
+              <AlertCircle size={12} /> NBEMS Official Schedule
             </span>
           </div>
 
@@ -258,8 +258,27 @@ export default function DashboardStats({
           <p className="text-xs text-slate-400 mt-2 leading-relaxed">
             Target date: <strong className="text-slate-600 font-medium">{new Date(examDate).toLocaleDateString(undefined, {
               dateStyle: 'long',
-            })}</strong>. Maintain standard target hours to ensure comfortable revisions.
+            })}</strong>.
           </p>
+
+          <p className="text-[11px] text-slate-400 mt-1 pb-2 border-b border-slate-100/60 leading-relaxed">
+            NEET PG 2026 is officially scheduled by the <strong className="text-slate-600 font-semibold text-xs">National Board of Examinations in Medical Sciences (NBEMS)</strong> to be conducted on <strong className="text-blue-600 font-bold">August 30, 2026</strong>.
+          </p>
+
+          {examDate !== '2026-08-30' && (
+            <div className="mt-2.5 p-2 bg-blue-50/70 border border-blue-100 rounded-xl flex flex-col gap-1.5">
+              <span className="text-[10px] text-blue-800 font-medium leading-normal">
+                Your current target date is set to <strong>{examDate}</strong>. Sync your tracker with the official NBEMS schedule?
+              </span>
+              <button
+                type="button"
+                onClick={() => onUpdateSettings({ examDate: '2026-08-30' })}
+                className="w-full py-1 text-[10px] font-extrabold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors text-center cursor-pointer"
+              >
+                Sync with Official Exam Date
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Motivational Quote or stats */}

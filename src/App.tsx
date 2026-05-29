@@ -307,7 +307,7 @@ export default function App() {
       subjects: JSON.parse(JSON.stringify(initialSubjects)),
       grandTests: [],
       dailyTasks: [],
-      examDate: new Date(Date.now() + 10 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      examDate: '2026-08-30',
       userName: 'Aspirant',
       dailyGoalHours: 8,
     });

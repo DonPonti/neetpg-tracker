@@ -17,14 +17,9 @@ export const getTodayDateString = () => {
   return `${year}-${month}-${day}`;
 };
 
-// Set default exam date to 10 months from now
+// Set default exam date to August 30, 2026, as officially scheduled by NBEMS
 const getDefaultExamDate = () => {
-  const date = new Date();
-  date.setMonth(date.getMonth() + 10);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return '2026-08-30';
 };
 
 export const loadProgressData = (): UserProgressData => {
