@@ -1,0 +1,305 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { Subject, Topic } from './types';
+
+// Helper to generate empty stages
+const createDefaultStages = () => ({
+  read: false,
+  rev1: false,
+  rev2: false,
+  mcq: false,
+  pyq: false,
+  notes: false,
+});
+
+// Helper to generate a topic
+const generateTopic = (id: string, name: string, priority: 'high' | 'medium' | 'low' = 'medium'): Topic => ({
+  id,
+  name,
+  priority,
+  isDoubted: false,
+  stages: createDefaultStages(),
+  notesText: '',
+});
+
+export const initialSubjects: Subject[] = [
+  // ================= PRE-CLINICAL =================
+  {
+    id: 'anatomy',
+    name: 'Anatomy',
+    category: 'pre-clinical',
+    color: 'emerald',
+    topics: [
+      generateTopic('anat-hneck', 'Head and Neck: Triangles, Arteries & Cranial Nerves', 'high'),
+      generateTopic('anat-neuro', 'Neuroanatomy: Brain stem, Circle of Willis & Ventricles', 'high'),
+      generateTopic('anat-ulimb', 'Upper Limb: Brachial Plexus, Spaces & Carpal Tunnel', 'medium'),
+      generateTopic('anat-llimb', 'Lower Limb: Femoral Triangle, Joints & Nerve Injuries', 'medium'),
+      generateTopic('anat-thorax', 'Thorax: Mediastinum, Heart Valves & Coronary Arteries', 'high'),
+      generateTopic('anat-abpelvis', 'Abdomen & Pelvis: Inguinal Canal, Peritoneum & Blood Supply', 'high'),
+      generateTopic('anat-embryo', 'Embryology: Pharyngeal Arches, Heart Development & Derivatives', 'high'),
+      generateTopic('anat-histo', 'Histology: Epithelium Types, Connective Tissues & Cartilage', 'low'),
+    ],
+  },
+  {
+    id: 'physiology',
+    name: 'Physiology',
+    category: 'pre-clinical',
+    color: 'teal',
+    topics: [
+      generateTopic('phys-general', 'General Physiology: Membrane Transport & Action Potentials', 'low'),
+      generateTopic('phys-nerve', 'Nerve-Muscle: NMJ, Cardiac & Skeletal Muscle Contraction', 'high'),
+      generateTopic('phys-blood', 'Hematology: Coagulation Cascade, Erythropoiesis & Anemias', 'medium'),
+      generateTopic('phys-cvs', 'CVS: Cardiac Cycle, ECG, Hemodynamics & Blood Pressure Regulation', 'high'),
+      generateTopic('phys-resp', 'Respiration: Lung Volumes, Oxygen-Hb Curve & V/Q Mismatch', 'high'),
+      generateTopic('phys-renal', 'Renal: GFR, Nephron Transport, Acid-Base & Countercurrent', 'high'),
+      generateTopic('phys-git', 'GIT: Gastrointestinal Hormones, Secretions & Motility', 'medium'),
+      generateTopic('phys-endocrine', 'Endocrine: Thyroid, Adrenal, Insulin, Pituitary & Calcium', 'high'),
+      generateTopic('phys-cns', 'CNS: Sensory/Motor Pathways, Cerebellum & Sleep Cycle', 'medium'),
+    ],
+  },
+  {
+    id: 'biochemistry',
+    name: 'Biochemistry',
+    category: 'pre-clinical',
+    color: 'cyan',
+    topics: [
+      generateTopic('biochem-carbs', 'Carbohydrate Metabolism: Glycolysis, TCA, Gluconeogenesis & Glycogen', 'high'),
+      generateTopic('biochem-lipids', 'Lipid Metabolism: Beta-Oxidation, Cholesterol & Lipoproteins', 'high'),
+      generateTopic('biochem-proteins', 'Proteins & Amino Acids: Urea Cycle, Specialized Products & Inborn Errors', 'high'),
+      generateTopic('biochem-molbio', 'Molecular Biology: Replication, Transcription, Translation & PCR/Blotting', 'high'),
+      generateTopic('biochem-enzymes', 'Enzymes: Kinetics, Michaelis-Menten & Transport/ETC Inhibitors', 'medium'),
+      generateTopic('biochem-vitamins', 'Vitamins & Minerals: Deficiency Syndromes, Coenzymes', 'high'),
+      generateTopic('biochem-storage', 'Inborn Errors of Storage: Glycogen Storage, Lipidoses & MPS', 'medium'),
+      generateTopic('biochem-heme', 'Heme Synthesis: Porphyria Pathway & Bilirubin Metabolism', 'medium'),
+    ],
+  },
+
+  // ================= PARA-CLINICAL =================
+  {
+    id: 'pathology',
+    name: 'Pathology',
+    category: 'para-clinical',
+    color: 'rose',
+    topics: [
+      generateTopic('path-general', 'General Path: Cell Injury, Adaptations, Necrosis & Apoptosis', 'high'),
+      generateTopic('path-inflam', 'Inflammation & Wound Healing: Chemical Mediators & Granulomas', 'medium'),
+      generateTopic('path-neoplasia', 'Neoplasia: Oncogenes, Tumor Suppressor Genes & Staging', 'high'),
+      generateTopic('path-hemo', 'Hematology: Leukemias, Lymphomas & RBC/Coagulation Disorders', 'high'),
+      generateTopic('path-cvs', 'Cardiovascular & Resp: MI, Atherosclerosis, COPD & Lung Tumors', 'medium'),
+      generateTopic('path-git', 'GIT & Hepatobiliary: IBD, Peptic Ulcer Diseases & Liver Cirrhosis', 'high'),
+      generateTopic('path-renal', 'Renal: Glomerulonephritis, Nephrotic/Nephritic Syndromes & RCC', 'high'),
+      generateTopic('path-endocrine', 'Endocrine: Thyroid Neoplasms & Pituitary/Adrenal Syndromes', 'medium'),
+      generateTopic('path-cns', 'CNS & Bones: Meningitis, Astrocytomas & Bone Tumors', 'low'),
+    ],
+  },
+  {
+    id: 'microbiology',
+    name: 'Microbiology',
+    category: 'para-clinical',
+    color: 'pink',
+    topics: [
+      generateTopic('micro-general', 'General Bacteriology: Sterilization, Disinfection & Culture Media', 'medium'),
+      generateTopic('micro-immunology', 'Immunology: Hypersensitivity, Complement System & HLA Association', 'high'),
+      generateTopic('micro-bacteriology', 'Systemic Bacteriology: Mycobacterial Infections, Spirochetes & Gram Pos/Neg', 'high'),
+      generateTopic('micro-virology', 'Virology: Hepatitis Virus, HIV Progression, Influenza & Herpesviruses', 'high'),
+      generateTopic('micro-mycology', 'Mycology: Candida, Cryptococcus, Aspergillus & Dermatophytosis', 'medium'),
+      generateTopic('micro-parasitology', 'Parasitology: Plasmodium (Malaria) Cycle, Amoebiasis & Helminths', 'high'),
+      generateTopic('micro-clinical', 'Clinical Microbiology: Hospital Acquired Infections & Lab Diagnosis of Sepsis', 'low'),
+    ],
+  },
+  {
+    id: 'pharmacology',
+    name: 'Pharmacology',
+    category: 'para-clinical',
+    color: 'orange',
+    topics: [
+      generateTopic('pharm-general', 'General Pharm: Pharmacokinetics, Dynamic Modifiers, Receptor Signaling', 'high'),
+      generateTopic('pharm-ans', 'ANS: Cholinergic, Anticholinergic, Sympathetic Agonists & Beta Blockers', 'high'),
+      generateTopic('pharm-autacoids', 'Autacoids & NSAIDs: Gout Therapy, Rheumatoid Arthritis & Antihistamines', 'medium'),
+      generateTopic('pharm-cvs', 'CVS: Antiarrhythmics, Antihypertensives, Diuretics & Heart Failure Drugs', 'high'),
+      generateTopic('pharm-cns', 'CNS: Anti-epileptics, Parkinsonism Drugs, Antipsychotics & Sedatives', 'high'),
+      generateTopic('pharm-chemo', 'Chemotherapy: Antibiotics, Antifungals, Antivirals & Anticancer regimens', 'high'),
+      generateTopic('pharm-endocrine', 'Endocrine Drugs: Insulin Regimens, Oral Hypoglycemics & Steroids', 'high'),
+      generateTopic('pharm-gitresp', 'Respiratory & GIT: Asthma-COPD Inhalers, H2 Blockers/PPIs & Laxatives', 'medium'),
+    ],
+  },
+  {
+    id: 'fmt',
+    name: 'Forensic Medicine (FMT)',
+    category: 'para-clinical',
+    color: 'amber',
+    topics: [
+      generateTopic('fmt-juris', 'Medical Jurisprudence: Consent, Professional Negligence & Court Procedures', 'medium'),
+      generateTopic('fmt-thanatology', 'Thanatology: Post-Mortem Milestones, Decomposition & Cadaveric Spasm', 'high'),
+      generateTopic('fmt-trauma', 'Traumatology: Mechanical Wounds, Firearm Gaps, Blast & Asphyxial Deaths', 'high'),
+      generateTopic('fmt-offences', 'Sexual Offences & Forensic Psychiatry: Rape Laws, Potency & Age Estimation', 'high'),
+      generateTopic('fmt-toxicology', 'Toxicology: Heavy Metals, Corrosives, Dhatura, Organophosphates & Snake Bite', 'high'),
+    ],
+  },
+  {
+    id: 'psm',
+    name: 'Preventive & Social Medicine (PSM)',
+    category: 'para-clinical',
+    color: 'yellow',
+    topics: [
+      generateTopic('psm-concepts', 'Concepts of Health: Levels of Prevention, Epidemiological Triad', 'high'),
+      generateTopic('psm-epidemiology', 'Epidemiology & Biostatistics: Study Designs (RCT, Cohort), Cohorts, Key Tests', 'high'),
+      generateTopic('psm-communicable', 'Communicable Diseases: Tuberculosis, Vector-Borne Control, Leprosy & Pandemic Milestones', 'high'),
+      generateTopic('psm-programs', 'National Health Programs: NHM, RNTCP/NTEP, JSSY & Immunization Schedules', 'high'),
+      generateTopic('psm-demography', 'Demography & Family Planning: Contraceptives, Pearl Index & Demographic Stages', 'high'),
+      generateTopic('psm-nutrition', 'Nutrition: PEM, Food Fortification, Nutritional Assessments & Obesity Metrics', 'medium'),
+      generateTopic('psm-environmental', 'Environmental & Occupational: Biomedical Waste Management & Silicosis/Asbestosis', 'high'),
+      generateTopic('psm-admin', 'Health Care Admin: PHC, CHC, Subcenter Norms & International Agencies (WHO, UNICEF)', 'medium'),
+    ],
+  },
+
+  // ================= CLINICAL =================
+  {
+    id: 'ophthalmology',
+    name: 'Ophthalmology',
+    category: 'clinical',
+    color: 'indigo',
+    topics: [
+      generateTopic('ophthal-cornea', 'Cornea & Conjunctiva: Keratitis, Trachoma, Vitamin A Deficiency', 'medium'),
+      generateTopic('ophthal-lens', 'Lens & Cataract: Congenital vs Senile, Surgical Options & Complications', 'high'),
+      generateTopic('ophthal-glaucoma', 'Glaucoma: Open Angle, Angle Closure Mechanics & Anti-Glaucoma Drugs', 'high'),
+      generateTopic('ophthal-retina', 'Uvea & Retina: Uveitis, Diabetic Retinopathy, ARMD & Retinal Detachment', 'high'),
+      generateTopic('ophthal-neuro', 'Neuro-Ophthalmology: Pupillary Pathways, Strabismus & Optic Neuritis', 'medium'),
+      generateTopic('ophthal-orbit', 'Orbit & Adnexa: Dacryocystitis, Ptosis & Orbital Fractures', 'low'),
+    ],
+  },
+  {
+    id: 'ent',
+    name: 'Otorhinolaryngology (ENT)',
+    category: 'clinical',
+    color: 'violet',
+    topics: [
+      generateTopic('ent-otology', 'Otology: CSOM Types, Otosclerosis, Deafness-Audiology & Meniere’s', 'high'),
+      generateTopic('ent-rhinology', 'Rhinology: DNS, Allergic Sinusitis, Epistaxis & Angiofibroma', 'medium'),
+      generateTopic('ent-larynx', 'Larynx & Pharynx: Tonsillitis, Vocal Cord Paralysis & Laryngeal CA', 'high'),
+      generateTopic('ent-procedures', 'Head/Neck Surgeries: Mastoidectomy, Tracheostomy Steps & Emergencies', 'medium'),
+    ],
+  },
+  {
+    id: 'medicine',
+    name: 'General Medicine',
+    category: 'clinical',
+    color: 'blue',
+    topics: [
+      generateTopic('med-cvs', 'Cardiology: CAD, Valvular Heart Diseases, Infective Endocarditis & ECG Interpretation', 'high'),
+      generateTopic('med-pulmo', 'Pulmonology: Pneumonias, Pleural Effusion, Asthma-COPD & TB Therapeutics', 'high'),
+      generateTopic('med-git', 'Gastroenterology: Peptic Ulcers, Malabsorption Syndromes, Cirrhosis & Pancreatitis', 'high'),
+      generateTopic('med-nephro', 'Nephrology: AKI, CKD Staging, Glomerular Diseases & Electrolyte Disturbances', 'high'),
+      generateTopic('med-neuro', 'Neurology: Stroke Management, Epilepsy, Parkinson’s & Peripheral Neuropathy', 'high'),
+      generateTopic('med-endo', 'Endocrinology: Diabetes Mellitus, Hyper/Hypothyroidism, Pituitary & Cushing’s', 'high'),
+      generateTopic('med-rheum', 'Rheumatology: Rheumatoid Arthritis, SLE, Sjogren & Gouty Arthritis', 'medium'),
+      generateTopic('med-infectious', 'Infectious: Vector-Borne Fevers (dengue, malaria), Enteric Fevers, COVID & Sepsis Protocol', 'high'),
+    ],
+  },
+  {
+    id: 'surgery',
+    name: 'General Surgery',
+    category: 'clinical',
+    color: 'skyblue',
+    topics: [
+      generateTopic('surg-general', 'General: Fluids, Electrolytes, Shock, Blood Transfusions & Burns Management', 'high'),
+      generateTopic('surg-arterial', 'Vascular: Arterial Disease, Aneurysms, DVT & Varicose Veins', 'medium'),
+      generateTopic('surg-breast', 'Breast & Thyroid: Fibroadenoma, Breast Cancer Staging & Thyroid Nodules', 'high'),
+      generateTopic('surg-git', 'Abdomen GIs: Intestinal Obstruction, Appendicitis, Cholelithiasis & GI Cancers', 'high'),
+      generateTopic('surg-hernia', 'Hernias: Inguinal, Femoral, Umbilical Mechanics & Surgical Repairs', 'high'),
+      generateTopic('surg-urology', 'Urology: BPH, Hematuria Differential, Renal-Bladder Tumors & Strictures', 'high'),
+      generateTopic('surg-neuro', 'Plastic & Neuro: Skin Grafts, EDH vs SDH Trails & Suture Types', 'medium'),
+      generateTopic('surg-pediatric', 'Pediatric Surg & Trauma: Pyloric Stenosis, Intussusception & ATLS Protocols', 'medium'),
+    ],
+  },
+  {
+    id: 'obg',
+    name: 'Obstetrics & Gynecology',
+    category: 'clinical',
+    color: 'purple',
+    topics: [
+      generateTopic('obg-antenatal', 'Preconception & AntenatalCare: Physiological Changes & Biochemical Screens', 'high'),
+      generateTopic('obg-complic', 'Obstetrics Complications: Preeclampsia, GDM, APH (Placenta Previa/Abruptio)', 'high'),
+      generateTopic('obg-labor', 'Labor & Delivery: Mechanism, Active Management (AMSTL), Partogram & PPH Management', 'high'),
+      generateTopic('obg-menstrual', 'Gynecology Menstrual: AUB, PCOS, Amenorrhea Workups & Endometriosis', 'high'),
+      generateTopic('obg-oncology', 'Gynec Oncology: Cervical Cancer screening/HPV, Endometrial & Ovarian Tumors', 'high'),
+      generateTopic('obg-contracep', 'Infertility & Contraception: IUDs, Hormonal Pills, Sterilization & IVF Cycles', 'high'),
+    ],
+  },
+  {
+    id: 'pediatrics',
+    name: 'Pediatrics',
+    category: 'clinical',
+    color: 'fuchsia',
+    topics: [
+      generateTopic('peds-growth', 'Growth & Development: Major Milestones, Short Stature Workup & Developmental Age', 'high'),
+      generateTopic('peds-neo', 'Neonatology: RDS, Neonatal Jaundice, APGAR, Sepsis & Resuscitation Steps', 'high'),
+      generateTopic('peds-nutrition', 'Nutrition: Breastfeeding Rules, Weaning, SAM Criteria & Rickets Management', 'high'),
+      generateTopic('peds-infections', 'Infections & Congenital: Measles, Mumps, Congenital Heart Diseases (TOF/VSD)', 'medium'),
+      generateTopic('peds-emergencies', 'Pediatric Emergencies: Poisonings, Dehydration/ORS Charts & Status Epilepticus', 'medium'),
+    ],
+  },
+  {
+    id: 'orthopedics',
+    name: 'Orthopedics',
+    category: 'clinical',
+    color: 'indigo',
+    topics: [
+      generateTopic('ortho-trauma', '骨Traumatology: Major Fractures, Dislocations, Nerve Injuries & Cast/Splint Pitfalls', 'high'),
+      generateTopic('ortho-infections', 'Bone Infections & Tumors: Osteomyelitis, Septic Arthritis, Osteosarcoma & Ewing’s', 'high'),
+      generateTopic('ortho-joints', 'Joints & Spine: Osteoarthritis, Ankylosing Spondylitis, CTEV & CDH/DDH Core', 'high'),
+      generateTopic('ortho-nerve', 'Spinal Pathologies: Disc Herniation, Spinal Tuberculosis (Pott’s Disease)', 'medium'),
+    ],
+  },
+  {
+    id: 'dermatology',
+    name: 'Dermatology (DVL)',
+    category: 'clinical',
+    color: 'red',
+    topics: [
+      generateTopic('derm-papulosquamous', 'Papulosquamous: Psoriasis, Lichen Planus, Pityriasis Rosea & Treatment', 'high'),
+      generateTopic('derm-vesiculobullous', 'Vesiculobullous: Pemphigus Vulgaris, Bullous Pemphigoid & Dermatitis Herpetiformis', 'high'),
+      generateTopic('derm-infections', 'Infections & Leprosy: Lepra Reactions, Scabies, Dermatophytes & Herpes Zoster', 'high'),
+      generateTopic('derm-stis', 'Sexually Transmitted: Syphilis, Chancroid, Lymphogranuloma Venereum (LGV)', 'high'),
+    ],
+  },
+  {
+    id: 'psychiatry',
+    name: 'Psychiatry',
+    category: 'clinical',
+    color: 'purple',
+    topics: [
+      generateTopic('psych-mood', 'Mood Disorders: Bipolar Affective (BPAD), Major Depressive Disorder (MDD)', 'high'),
+      generateTopic('psych-schizo', 'Schizophrenia: Positive vs Negative Symptoms, Delusional Types', 'medium'),
+      generateTopic('psych-anxiety', 'Anxiety & Others: OCD, PTSD, Panic Disorder & Somatoform Disorders', 'medium'),
+      generateTopic('psych-substance', 'Substance Use: Alcohol Withdrawal (Delirium), Opioid Abuse & Rehab Drugs', 'high'),
+      generateTopic('psych-therapeutics', 'Psychopharmacology: MOA, Side Effects of Antidepressants, Antipsychotics & Lithium', 'high'),
+    ],
+  },
+  {
+    id: 'anesthesiology',
+    name: 'Anesthesiology',
+    category: 'clinical',
+    color: 'emerald',
+    topics: [
+      generateTopic('anes-inhalation', 'Inhalational & IV Agents: Propofol, Ketamine, Ether, Sevoflurane & Nitrous Oxide', 'high'),
+      generateTopic('anes-regional', 'Regional Anesthesia: Spinal vs Epidural, Local Anesthetics & Toxicities', 'high'),
+      generateTopic('anes-preop', 'Pre-op: ASA Grading, Airway Assessment (Mallampati), Muscle Relaxants', 'medium'),
+      generateTopic('anes-resuscitation', 'Resuscitation: Basic (BLS) & Advanced (ACLS) CPR Algorithms', 'high'),
+    ],
+  },
+  {
+    id: 'radiology',
+    name: 'Radiology & Radiotherapy',
+    category: 'clinical',
+    color: 'blue',
+    topics: [
+      generateTopic('radio-imaging', 'Imaging Modalities: X-ray, Ultrasound, CT, MRI and Radiation Hazards/Safety', 'high'),
+      generateTopic('radio-contrast', 'Contrast Media: Barium, Iodine, Magnetically Active (Gadolinium) & Adverse Effects', 'medium'),
+      generateTopic('radio-oncology', 'Radiotherapy: Linear Accelerator, Brachytherapy, Radiosensitive Tumors', 'medium'),
+    ],
+  },
+];
