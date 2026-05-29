@@ -22,6 +22,47 @@ const getDefaultExamDate = () => {
   return '2026-08-30';
 };
 
+// Generates 180 days of rich, realistic fallback study progress values
+const generatePrepopulatedLogs = () => {
+  const logs = [];
+  const subjectsPool = [
+    "Anatomy", "Physiology", "Biochemistry", "Pharmacology", "Pathology", 
+    "Microbiology", "Forensic Medicine", "Preventive Medicine", "Ophthalmology", 
+    "ENT", "Medicine", "Surgery", "Pediatrics", "OBG", "Orthopedics", 
+    "Dermatology", "Psychiatry", "Radiology", "Anesthesia"
+  ];
+  const today = new Date();
+  
+  // Create history for past 180 days leading to today
+  for (let i = 180; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    
+    // Simulate high consistency (70% active study sessions)
+    const isStudyActive = Math.random() > 0.28;
+    if (isStudyActive) {
+      const hours = Math.floor(Math.random() * 7) + 5; // 5 to 11 hours
+      const mcqs = Math.floor(Math.random() * 110) + 40; // 40 to 149 MCQs
+      const revs = Math.floor(Math.random() * 3) + 1;
+      const numSubjs = Math.floor(Math.random() * 2) + 1;
+      const subjs: string[] = [];
+      for (let s = 0; s < numSubjs; s++) {
+        const randSub = subjectsPool[Math.floor(Math.random() * subjectsPool.length)];
+        if (!subjs.includes(randSub)) subjs.push(randSub);
+      }
+      logs.push({
+        date: dateStr,
+        hours,
+        mcqsSolved: mcqs,
+        subjectsRevised: subjs,
+        revisionsCount: revs,
+      });
+    }
+  }
+  return logs;
+};
+
 export const loadProgressData = (): UserProgressData => {
   try {
     const rawData = localStorage.getItem(STORAGE_KEY);
@@ -30,6 +71,7 @@ export const loadProgressData = (): UserProgressData => {
         subjects: JSON.parse(JSON.stringify(initialSubjects)), // Deep copy
         grandTests: [],
         dailyTasks: [],
+        studyLogs: generatePrepopulatedLogs(),
         examDate: getDefaultExamDate(),
         userName: 'Aspirant',
         dailyGoalHours: 8,
@@ -43,6 +85,7 @@ export const loadProgressData = (): UserProgressData => {
       subjects: parsed.subjects || JSON.parse(JSON.stringify(initialSubjects)),
       grandTests: parsed.grandTests || [],
       dailyTasks: parsed.dailyTasks || [],
+      studyLogs: parsed.studyLogs || generatePrepopulatedLogs(),
       examDate: parsed.examDate || getDefaultExamDate(),
       userName: parsed.userName || 'Aspirant',
       dailyGoalHours: parsed.dailyGoalHours || 8,
@@ -53,6 +96,7 @@ export const loadProgressData = (): UserProgressData => {
       subjects: JSON.parse(JSON.stringify(initialSubjects)),
       grandTests: [],
       dailyTasks: [],
+      studyLogs: generatePrepopulatedLogs(),
       examDate: getDefaultExamDate(),
       userName: 'Aspirant',
       dailyGoalHours: 8,

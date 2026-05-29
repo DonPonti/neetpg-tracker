@@ -62,11 +62,22 @@ export interface StudySession {
   notes?: string;
 }
 
+export interface StudyLog {
+  date: string; // YYYY-MM-DD
+  hours: number;
+  mcqsSolved: number;
+  subjectsRevised: string[];
+  revisionsCount: number;
+}
+
 export interface UserProgressData {
   subjects: Subject[];
   grandTests: GrandTest[];
   dailyTasks: DailyTask[];
+  studyLogs: StudyLog[]; // GitHub contribution heatmap entries
   examDate: string;
   userName: string;
   dailyGoalHours: number;
+  xp?: number; // Accumulated XP
+  level?: number; // Candidate level
 }

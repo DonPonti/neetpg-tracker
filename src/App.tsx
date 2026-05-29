@@ -16,9 +16,14 @@ import {
   CheckCircle,
   HelpCircle,
   AlertTriangle,
+  Compass,
+  Zap,
+  Flame,
+  LayoutDashboard,
+  Brain,
 } from 'lucide-react';
 
-import { UserProgressData, PrepStage, GrandTest } from './types';
+import { UserProgressData, PrepStage, GrandTest, StudyLog } from './types';
 import { loadProgressData, saveProgressToLocalStorage, exportUserData } from './utils/storage';
 import { initialSubjects } from './initialSyllabus';
 
@@ -26,10 +31,11 @@ import DashboardStats from './components/DashboardStats';
 import SubjectTopicsDetail from './components/SubjectTopicsDetail';
 import GrandTestTracker from './components/GrandTestTracker';
 import TaskPlanner from './components/TaskPlanner';
+import RankPredictor from './components/RankPredictor';
 
 export default function App() {
   const [data, setData] = useState<UserProgressData>(() => loadProgressData());
-  const [activeTab, setActiveTab] = useState<'syllabus' | 'mocks' | 'planner'>('syllabus');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'syllabus' | 'mocks' | 'predictor' | 'planner'>('dashboard');
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<boolean>(false);
 
@@ -44,6 +50,23 @@ export default function App() {
       ...prev,
       ...settings,
     }));
+  };
+
+  // Study log callback for Github contribution heatmap
+  const handleAddStudyLog = (log: StudyLog) => {
+    setData((prev) => {
+      const updatedLogs = [...prev.studyLogs];
+      const existingIndex = updatedLogs.findIndex((l) => l.date === log.date);
+      if (existingIndex >= 0) {
+        updatedLogs[existingIndex] = log;
+      } else {
+        updatedLogs.push(log);
+      }
+      return {
+        ...prev,
+        studyLogs: updatedLogs,
+      };
+    });
   };
 
   // Syllabus modification callbacks
@@ -278,158 +301,184 @@ export default function App() {
       try {
         const parsed = JSON.parse(event.target?.result as string);
         if (parsed && typeof parsed === 'object') {
-          // Verify critical keys to secure structure
+          // Verify structure
           if (Array.isArray(parsed.subjects) || Array.isArray(parsed.grandTests)) {
             setData(parsed as UserProgressData);
             setImportSuccess(true);
             setTimeout(() => setImportSuccess(false), 3000);
           } else {
-            setImportError('Invalid backup file formatting: subjects/tests missed.');
+            setImportError('Invalid backup file structure: components missing.');
           }
         } else {
-          setImportError('Corrupted file contents.');
+          setImportError('Empty file provided.');
         }
       } catch (err) {
-        setImportError('Failed to parse file. Ensure it is a valid tracker JSON backup.');
+        setImportError('Failed to parse file. Make sure it is a valid tracker JSON backup.');
       }
     };
     reader.readAsText(file);
   };
 
-  // Reset entire workflow back to pristine state
+  // Reset entire workflow back to default
   const handleResetProgress = () => {
     const hasConfirmed = window.confirm(
-      '⚠️ CRITICAL WARNING: This will permanently purge your entire study progresses and mock records. Click OK if you wish to reset.'
+      '⚠️ CRITICAL WARNING: This will permanently purge your entire study progresses, streaks, and mock records. Click OK if you wish to reset.'
     );
     if (!hasConfirmed) return;
 
-    setData({
-      subjects: JSON.parse(JSON.stringify(initialSubjects)),
-      grandTests: [],
-      dailyTasks: [],
-      examDate: '2026-08-30',
-      userName: 'Aspirant',
-      dailyGoalHours: 8,
-    });
+    localStorage.removeItem('neet_pg_syllabus_tracker_data_v1');
+    window.location.reload();
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-700 antialiased font-sans">
-      {/* Premium Header */}
-      <header className="bg-white border-b border-slate-100/80 sticky top-0 z-40 shadow-xs backdrop-blur-md bg-white/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500/30 font-sans antialiased flex flex-col lg:flex-row relative">
+      
+      {/* Background Glow effects */}
+      <div className="fixed top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.06),transparent_45%)] pointer-events-none z-0" />
+      <div className="fixed top-1/2 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_60%,rgba(16,185,129,0.04),transparent_40%)] pointer-events-none z-0" />
+
+      {/* ----------------- SIDEBAR CONTAINER (DESKTOP) ----------------- */}
+      <aside className="hidden lg:flex w-72 shrink-0 bg-slate-900 border-r border-slate-800/80 p-6 flex-col justify-between sticky top-0 h-screen z-40 shadow-xl select-none">
+        <div className="space-y-8">
+          
+          {/* Brand/logo */}
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-500/10 ring-4 ring-blue-50">
-              <BookMarked size={19} />
+            <div className="h-10 w-10 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-xl shadow-blue-500/10 ring-2 ring-slate-800 animate-pulse">
+              <Brain size={20} />
             </div>
             <div>
-              <h1 className="text-base font-extrabold text-slate-950 font-display tracking-tight leading-none">NEET PG SyllaTrack</h1>
-              <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-wider mt-0.5 block font-sans">Syllabus Planner</span>
+              <h1 className="text-sm font-black text-white font-display tracking-wide uppercase leading-none">NEET PG</h1>
+              <span className="text-[10px] text-blue-400 font-extrabold tracking-widest uppercase mt-1 block">SyllaTrack Pro</span>
             </div>
           </div>
 
-          {/* Configuration Actions */}
-          <div className="flex items-center gap-2">
-            {/* Backup export button */}
+          {/* User Profile Summary */}
+          <div className="bg-slate-950/70 border border-slate-850 p-3.5 rounded-2xl">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center text-indigo-400 font-bold font-display text-sm">
+                {data.userName.charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-black text-white truncate leading-none">{data.userName}</div>
+                <span className="text-[9px] text-slate-500 mt-1 block font-mono">August 30, 2026 Target</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Nav Items */}
+          <nav className="space-y-1.5">
+            {[
+              { id: 'dashboard', label: 'Candidate Dashboard', icon: <LayoutDashboard size={15} /> },
+              { id: 'syllabus', label: '19 Subjects Syllabus', icon: <BookMarked size={15} /> },
+              { id: 'mocks', label: 'Grand Test Analytics', icon: <Award size={15} /> },
+              { id: 'predictor', label: 'Rank Predictor', icon: <Compass size={15} /> },
+              { id: 'planner', label: 'Daily Focus targets', icon: <CalendarDays size={15} /> },
+            ].map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer relative ${
+                    isActive
+                      ? 'bg-blue-600 font-black text-white shadow-lg shadow-blue-500/20'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-850/60'
+                  }`}
+                >
+                  <span className={isActive ? 'text-white' : 'text-slate-500'}>{tab.icon}</span>
+                  <span>{tab.label}</span>
+                  {isActive && (
+                    <span className="absolute right-3.5 w-1.5 h-1.5 rounded-full bg-white shadow-glow" />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Bottom backup utility dashboard buttons */}
+        <div className="space-y-2.5 pt-6 border-t border-slate-800/80">
+          
+          <div className="flex gap-2">
             <button
               onClick={handleExportBackup}
-              className="p-2 text-slate-500 hover:text-slate-850 hover:bg-slate-50 rounded-xl transition-all flex items-center gap-1.5 text-xs font-semibold border border-transparent hover:border-slate-100"
-              title="Export JSON backup data to take offline"
+              className="flex-1 py-2 bg-slate-950 hover:bg-slate-850 rounded-xl border border-slate-800 text-slate-300 text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all"
+              title="Download full tracker progress offline parameters"
             >
-              <Download size={14} />
-              <span className="hidden sm:inline">Backup</span>
+              <Download size={11} className="text-slate-500" /> Backup
             </button>
 
-            {/* Custom File Upload Input */}
-            <label className="p-2 text-slate-500 hover:text-slate-850 hover:bg-slate-50 rounded-xl cursor-pointer transition-all flex items-center gap-1.5 text-xs font-semibold border border-transparent hover:border-slate-100">
-              <Upload size={14} />
-              <span className="hidden sm:inline">Import</span>
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleImportBackup}
-                className="sr-only"
-              />
+            <label className="flex-1 py-2 bg-slate-950 hover:bg-slate-850 rounded-xl border border-slate-800 text-slate-300 text-[10px] font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+              <Upload size={11} className="text-slate-500" /> Import
+              <input type="file" accept=".json" onChange={handleImportBackup} className="sr-only" />
             </label>
-
-            {/* Total Reset progress button */}
-            <button
-              onClick={handleResetProgress}
-              className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-all flex items-center gap-1.5 text-xs font-semibold border border-transparent hover:border-rose-100"
-              title="Reset everything to default templates"
-            >
-              <RefreshCcw size={14} />
-              <span className="hidden sm:inline font-bold">Reset</span>
-            </button>
           </div>
+
+          <button
+            onClick={handleResetProgress}
+            className="w-full py-2 hover:bg-rose-500/10 rounded-xl border border-transparent hover:border-rose-500/15 text-rose-400 text-[10px] font-extrabold flex items-center justify-center gap-1.5 transition-all"
+          >
+            <RefreshCcw size={11} /> Master Reset Tracker
+          </button>
+        </div>
+      </aside>
+
+      {/* ----------------- MOBILE BRAND HEADER ----------------- */}
+      <header className="lg:hidden bg-slate-900 border-b border-slate-800 z-40 sticky top-0 p-4 flex items-center justify-between shadow-md">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white">
+            <Brain size={16} />
+          </div>
+          <span className="text-xs font-black text-white font-display uppercase tracking-widest">NEET PG Pro</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExportBackup}
+            className="p-1 px-2.5 bg-slate-950 border border-slate-800 rounded-lg text-slate-300 text-[10px] font-bold flex items-center gap-1"
+          >
+            <Download size={10} /> Backup
+          </button>
+          <button
+            onClick={handleResetProgress}
+            className="p-1 px-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-lg text-[10px] font-bold"
+          >
+            Reset
+          </button>
         </div>
       </header>
 
-      {/* Main Grid Wrapper */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Import Messages feedback */}
+      {/* ----------------- CORE VIEWPORT ----------------- */}
+      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full relative z-10 pb-24 md:pb-8">
+        
+        {/* Error notification banner */}
         {importError && (
-          <div className="mb-4 p-4 bg-rose-50 border border-rose-100 text-rose-800 rounded-2xl text-xs font-semibold flex items-center gap-2">
+          <div className="mb-4 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-350 rounded-2xl text-xs font-semibold flex items-center gap-2">
             <AlertTriangle size={15} /> {importError}
           </div>
         )}
         {importSuccess && (
-          <div className="mb-4 p-4 bg-emerald-50 border border-emerald-100 text-emerald-800 rounded-2xl text-xs font-semibold flex items-center gap-2">
-            <CheckCircle size={15} /> Data backup restored successfully. Happy studying!
+          <div className="mb-4 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl text-xs font-semibold flex items-center gap-2">
+            <CheckCircle size={15} /> Candidate backup data synchronized successfully. Let's study!
           </div>
         )}
 
-        {/* Global Dashboard metrics cards */}
-        <DashboardStats
-          subjects={data.subjects}
-          userName={data.userName}
-          examDate={data.examDate}
-          dailyGoalHours={data.dailyGoalHours}
-          onUpdateSettings={handleUpdateSettings}
-        />
+        {/* ----------------- VIEW SWITCHER ----------------- */}
+        <div id="tab-viewport" className="focus:outline-none">
+          {activeTab === 'dashboard' && (
+            <DashboardStats
+              subjects={data.subjects}
+              userName={data.userName}
+              examDate={data.examDate}
+              dailyGoalHours={data.dailyGoalHours}
+              studyLogs={data.studyLogs}
+              grandTests={data.grandTests}
+              dailyTasks={data.dailyTasks}
+              onAddStudyLog={handleAddStudyLog}
+              onUpdateSettings={handleUpdateSettings}
+            />
+          )}
 
-        {/* Modular Navigation Tabs */}
-        <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200/50 shadow-inner mb-6">
-          <button
-            onClick={() => setActiveTab('syllabus')}
-            className={`flex-1 py-3 px-2 sm:px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'syllabus'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            }`}
-          >
-            <BookMarked size={15} className="shrink-0" />
-            <span className="hidden md:inline">Syllabus Checklist (19 Subjects)</span>
-            <span className="md:hidden">Syllabus</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('mocks')}
-            className={`flex-1 py-3 px-2 sm:px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'mocks'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            }`}
-          >
-            <Award size={15} className="shrink-0" />
-            <span className="hidden md:inline">Grand Test & Mock Analytics</span>
-            <span className="md:hidden">Mocks</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('planner')}
-            className={`flex-1 py-3 px-2 sm:px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'planner'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            }`}
-          >
-            <CalendarDays size={15} className="shrink-0" />
-            <span className="hidden md:inline">Daily Focus Targets</span>
-            <span className="md:hidden">Planner</span>
-          </button>
-        </div>
-
-        {/* Tab content rendering */}
-        <div id="tab-viewport">
           {activeTab === 'syllabus' && (
             <SubjectTopicsDetail
               subjects={data.subjects}
@@ -449,6 +498,10 @@ export default function App() {
             />
           )}
 
+          {activeTab === 'predictor' && (
+            <RankPredictor />
+          )}
+
           {activeTab === 'planner' && (
             <TaskPlanner
               tasks={data.dailyTasks}
@@ -460,17 +513,41 @@ export default function App() {
             />
           )}
         </div>
+
+        {/* Global humble footer */}
+        <footer className="mt-16 border-t border-slate-900 bg-transparent py-8 text-center text-slate-500 text-xs">
+          <p className="font-bold">NEET PG SyllaTrack Master Console</p>
+          <p className="text-[10px] mt-1 text-slate-600">
+            Completely private browser state. Optimized for candidates preparing for official NBEMS schedules.
+          </p>
+        </footer>
       </main>
 
-      {/* Humble, clean outer footer */}
-      <footer className="mt-16 border-t border-slate-100 bg-white py-8 text-center text-slate-400 text-xs">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="font-medium">NEET PG SyllaTrack Checklist Dashboard</p>
-          <p className="text-[10px] mt-1 text-slate-300">
-            Completely local. Data never leaves your machine. Save backup regularly.
-          </p>
-        </div>
-      </footer>
+      {/* ----------------- MOBILE NAVIGATION BAR (STICKY BOTTOM) ----------------- */}
+      <div className="lg:hidden fixed bottom-5 left-4 right-4 bg-slate-900/90 border border-slate-800 backdrop-blur-md h-16 rounded-2xl flex items-center justify-around z-50 shadow-2xl px-2">
+        {[
+          { id: 'dashboard', label: 'Home', icon: <LayoutDashboard size={18} /> },
+          { id: 'syllabus', label: 'Syllabus', icon: <BookMarked size={18} /> },
+          { id: 'mocks', label: 'Mocks', icon: <Award size={18} /> },
+          { id: 'predictor', label: 'Rank', icon: <Compass size={18} /> },
+          { id: 'planner', label: 'Planner', icon: <CalendarDays size={18} /> },
+        ].map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`flex flex-col items-center justify-center p-2 rounded-xl flex-1 transition-all ${
+                isActive ? 'text-blue-400 font-extrabold scale-110' : 'text-slate-550 hover:text-white'
+              }`}
+            >
+              {tab.icon}
+              <span className="text-[9px] mt-1 font-bold tracking-tight">{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
     </div>
   );
 }
